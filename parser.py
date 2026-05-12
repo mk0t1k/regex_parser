@@ -1,14 +1,25 @@
 from itertools import product
 from ast import ASTNode, CharNode, ConcatNode, UnionNode, StarNode, PlusNode, QuestionNode
+from automata import DFA
 from lexer import Tokenizer, Token
 
 class Parser:
     current_token: Token
     tokenizer: Tokenizer
 
-    def __init__(self, tokenizer: Tokenizer):
-        self.tokenizer = tokenizer
-        self.current_token = self.tokenizer.get_next_token()
+    def __init__(self, data):
+        if isinstance(data, Tokenizer):         
+            self.tokenizer = data
+            self.current_token = self.tokenizer.get_next_token()
+        else:
+            self.tokenizer = Tokenizer(data)
+            self.current_token = self.tokenizer.get_next_token()
+
+    # syntax sugar for simple public API
+    def parse(self) -> DFA:
+        ast = self.parse_regex()
+        nfa = ast.to_nfa()
+        return nfa.to_dfa()
 
     def consume(self, token_type: str):
         if self.current_token.type == token_type:
