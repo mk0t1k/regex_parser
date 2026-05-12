@@ -16,7 +16,7 @@ class Parser:
         else:
             raise Exception(f"Expected {token_type}, got {self.current_token.type}")
     
-    def parse_regex(self):
+    def parse_regex(self) -> ASTNode:
         """
         <regex> ::= <term> ('|' <term>)*
         """

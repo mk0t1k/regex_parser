@@ -94,3 +94,14 @@ class NFA:
                 current_dfa_state.add_transition(symbol, state_map[next_closure])
 
         return DFA(dfa_start, dfa_accept)
+    
+    def accepts(self, s: str) -> bool:
+        current = self.e_closure({self.start})
+
+        for char in s:
+            moves = set()
+            for q in current:
+                moves.update(q.transitions.get(char, []))
+            current = self.e_closure(moves)
+
+        return self.accept in current
